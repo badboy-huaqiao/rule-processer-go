@@ -24,8 +24,8 @@ func SubscribeFromZMQ() {
       msg, _ := socket.Recv(0)
       println("Received : ", string(msg))
       json.Unmarshal(msg,&tmpMap)
-      for _,v := range chanRegisterMap {
-        v <- tmpMap["readings"]
+      for _,ch := range chanRegisterMap {
+        ch <- tmpMap["readings"]
       }
   }
 }

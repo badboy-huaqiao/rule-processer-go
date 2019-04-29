@@ -1,6 +1,8 @@
 package model
 
 type Input struct {
+  // normal or urgent
+  Severity string
   DeviceName string
   DevicePropertiesName []string
 }
@@ -8,11 +10,11 @@ type Input struct {
 type Action struct {
   DeviceName string
   //command name defined in device proile
-  commandName string
+  CommandName string
   //only get or set
-  method string
+  Method string
   //only used when command method is set
-  value interface{}
+  Value interface{}
 }
 
 type Output struct {

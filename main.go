@@ -11,13 +11,40 @@ func loadPlugin(plugin_path string) *plugin.Plugin {
 	return plug
 }
 
+// func isExistPorperty(reading model.Reading) bool {
+// 	for _,property := range input.DevicePropertiesName {
+//
+// 	}
+// }
+
+func isExistDevice(inputs []model.Input,reading model.Reading) bool {
+	for _,input := range inputs {
+		if input.DeviceName == reading.Device &&
+			 input.Severity == "normal" {
+			return true
+		}
+	}
+	return false
+}
+
 func parseInputs(inputs []model.Input,
 	dataCh <-chan []model.Reading,
 	filterCh chan []model.Reading) {
 
-	for readings := range dataCh {
+	go func(){
 		
-	}
+	}()
+
+	go func(){
+		for readings := range dataCh {
+			for _,reading := range readings {
+				if isExistDevice(inputs,reading) {
+					filterCh <- readings
+					break
+				}
+			}
+		}
+	}()
 }
 
 func handleOutputs(outputs []model.Output) {
@@ -36,13 +63,17 @@ func startupPluin(path string, name string,
 
 	inputs := processorPlugin.SetInput()
 
-	parseInputs(inputs, dataCh, filterCh)
+	var once bool = true
+	for once {
+		parseInputs(inputs, dataCh, filterCh)
 
-	processorPlugin.Process(filterCh)
+		once = processorPlugin.Process(filterCh)
 
-	outputs := processorPlugin.SetOutput()
+		outputs := processorPlugin.SetOutput()
 
-	handleOutputs(outputs)
+		handleOutputs(outputs)
+	}
+
 }
 
 func main() {

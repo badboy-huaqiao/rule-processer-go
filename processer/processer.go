@@ -5,7 +5,8 @@ import (
 )
 
 type Processor interface {
-	Process(reading <-chan []model.Reading)
+	//once return true
+	Process(reading <-chan []model.Reading) bool
 	SetInput() []model.Input
 	SetOutput() []model.Output
 }
